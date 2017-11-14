@@ -1,0 +1,19 @@
+url="https://httpbin.org"
+
+POST /post First request
+header["Accept"] = "application/json"
+header["Content-Type"] = "application/json"
+query.nihao = "世界"
+param.hello = "world"
+
+Response
+must(status==200)
+j = JSON.parse(body)
+origin = j.origin
+
+GET /etag/:origin Second request
+header["X-Hello-Frank"] = "Frank"
+query.hello = origin
+
+Response
+must(status==200)
