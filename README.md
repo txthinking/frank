@@ -237,3 +237,11 @@ $ frank -m
 # Write to api.md
 $ frank -m > api.md
 ```
+
+## Contributing
+
+* Please create PR on `develop` branch
+
+## License
+
+Licensed under The GPLv3 License
