@@ -6,6 +6,9 @@
 
 * [What is Frank](#what-is-frank)
 * [Install](#install)
+	* [Linux](#linux)
+	* [MacOS](#macos)
+	* [Source](#source)
 * [Test case file](#test-case-file)
 	* [Score](#score)
 	* [Comment](#comment)
@@ -31,9 +34,24 @@ Frank is REST API automated testing tool like Postman but in command line.
 
 ## Install
 
+### Linux
+
 ```
 $ sudo curl -L git.io/frank -o /usr/local/bin/frank
 $ sudo chmod +x /usr/local/bin/frank
+```
+
+### MacOS
+
+```
+$ sudo curl -L git.io/frank_macos -o /usr/local/bin/frank
+$ sudo chmod +x /usr/local/bin/frank
+```
+
+### source
+
+```
+$ go get github.com/txthinking/frank
 ```
 
 ## Test case file
