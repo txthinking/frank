@@ -2,8 +2,8 @@ package main
 
 import "testing"
 
-func TestNewCase(t *testing.T) {
-	c, err := NewCase("./case.frank")
+func TestFrank(t *testing.T) {
+	c, err := NewCase("./case.frank", 0)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -2,19 +2,18 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net/http"
 	"time"
-
-	"github.com/fatih/color"
 )
 
+// HttpClient is a http client
 type HttpClient struct {
 	Client *http.Client
 	URL    string
 }
 
+// NewHttpClient return a new client
 func NewHttpClient(url string) *HttpClient {
 	c := &HttpClient{
 		Client: &http.Client{
@@ -25,12 +24,17 @@ func NewHttpClient(url string) *HttpClient {
 	return c
 }
 
+// Do a request
 func (c *HttpClient) Do(req *Request) (*http.Response, error) {
 	var body io.Reader
 	if req.Method == "POST" || req.Method == "PUT" {
 		body = bytes.NewReader(req.Body)
 	}
-	r, err := http.NewRequest(req.Method, c.URL+req.Path+"?"+req.Query.Encode(), body)
+	q := "?" + req.Query.Encode()
+	if q == "?" {
+		q = ""
+	}
+	r, err := http.NewRequest(req.Method, c.URL+req.Path+q, body)
 	if err != nil {
 		return nil, err
 	}
@@ -45,35 +49,4 @@ func (c *HttpClient) Do(req *Request) (*http.Response, error) {
 		PrintRequestMarkdown(r, req)
 	}
 	return res, nil
-}
-
-func PrintRequest(r *http.Request, req *Request) {
-	fmt.Print("\n")
-	color.Green("Request [%s]>\n", req.Name)
-	fmt.Printf("GET %s HTTP/1.1\r\n", r.URL.RequestURI())
-	for k, _ := range r.Header {
-		fmt.Printf("%s: %s\r\n", k, r.Header.Get(k))
-	}
-	fmt.Printf("\r\n")
-	if r.Method == "POST" || r.Method == "PUT" {
-		fmt.Printf("%s\n", req.Body)
-	}
-}
-
-func PrintRequestMarkdown(r *http.Request, req *Request) {
-	fmt.Print("\n")
-	fmt.Printf("### `%s`\n", req.RawName)
-	fmt.Print("<details>\n")
-	fmt.Print("<summary>Request</summary>\n")
-	fmt.Print("\n")
-	fmt.Print("```\n")
-	for k, _ := range r.Header {
-		fmt.Printf("%s: %s\r\n", k, r.Header.Get(k))
-	}
-	fmt.Printf("\r\n")
-	if r.Method == "POST" || r.Method == "PUT" {
-		fmt.Printf("%s\n", req.Body)
-	}
-	fmt.Print("```\n")
-	fmt.Print("</details>\n")
 }

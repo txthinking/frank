@@ -5,6 +5,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 )
 
@@ -23,6 +24,11 @@ func main() {
 			Usage:       "Print markdown document",
 			Destination: &markdown,
 		},
+		cli.Int64Flag{
+			Name:  "delay, d",
+			Usage: "Delay per request, (millisecond)",
+			Value: 0,
+		},
 		cli.StringFlag{
 			Name:  "case, c",
 			Usage: "Path of case file",
@@ -30,15 +36,18 @@ func main() {
 		},
 	}
 	app.Action = func(c *cli.Context) error {
-		return runCase(c.String("case"))
+		if err := runCase(c.String("case"), c.Int64("delay")); err != nil {
+			color.Red(err.Error())
+		}
+		return nil
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func runCase(f string) error {
-	c, err := NewCase(f)
+func runCase(f string, d int64) error {
+	c, err := NewCase(f, d)
 	if err != nil {
 		return err
 	}

@@ -1,19 +1,49 @@
-url="https://httpbin.org"
+// This is a frank test case file
+// -- https://github.com/txthinking/frank
 
-POST /post First request
+url="https://httpbin.org"
+some="thing"
+
+GET /get
+
+Response
+
+GET /ip Get my IP
+header["X-Hello-Frank"] = "Frank"
+query.key0 = "value0"
+
+Response
+must(status==200)
+
+POST /post Post form
+header["Content-Type"] = "application/x-www-form-urlencoded"
+form.key0 = "value0"
+
+Response
+must(status==200)
+
+POST /post Post file
+header["Content-Type"] = "multipart/form-data; boundary=" + boundary
+form.key0 = "valueo"
+form.key1 = "@/etc/hosts"
+
+Response
+must(status==200)
+
+POST /post Post json data
 header["Accept"] = "application/json"
 header["Content-Type"] = "application/json"
-query.nihao = "世界"
-param.hello = "world"
+json.key0 = "value0"
+json.key1 = "value1"
+json.key2 = some
 
 Response
 must(status==200)
 j = JSON.parse(body)
-origin = j.origin
+myip = j.origin
 
-GET /etag/:origin Second request
-header["X-Hello-Frank"] = "Frank"
-query.hello = origin
+GET /etag/:myip Just a GET request
+query.key0 = myip
 
 Response
 must(status==200)

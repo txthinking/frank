@@ -12,9 +12,22 @@ import (
 	"strings"
 
 	sj "github.com/bitly/go-simplejson"
-	"github.com/fatih/color"
+	"github.com/txthinking/ant"
 )
 
+// Request is one of requests in case
+type Request struct {
+	RawName string
+	Name    string
+	Method  string
+	Path    string
+	Header  http.Header
+	Query   url.Values
+	Body    []byte
+	JS      string
+}
+
+// RequestBegin determines whether the request begined
 func RequestBegin(s string) bool {
 	if !strings.HasPrefix(s, "DELETE ") &&
 		!strings.HasPrefix(s, "GET ") &&
@@ -27,13 +40,7 @@ func RequestBegin(s string) bool {
 	return true
 }
 
-func ResponseBegin(s string) bool {
-	if strings.HasPrefix(s, "Response") {
-		return true
-	}
-	return false
-}
-
+// MakeStartLine parses start-line
 func (r *Request) MakeStartLine() error {
 	ss := strings.SplitN(r.JS, "\n", 2)
 	if len(ss) != 2 {
@@ -71,8 +78,9 @@ func (r *Request) MakeStartLine() error {
 	return nil
 }
 
+// Parse parses request
 func (r *Request) Parse() error {
-	_, err := VM.Run(`header = {"User-Agent": "github.com/txthinking/frank"}; query = {}; param = {};`)
+	_, err := VM.Run(fmt.Sprintf(`header={"User-Agent": "github.com/txthinking/frank"}; boundary="%d"; query={}; form={}; json={}; bodyRaw=""; bodyFile="";`, ant.RandomNumber()))
 	if err != nil {
 		return err
 	}
@@ -83,6 +91,7 @@ func (r *Request) Parse() error {
 	return nil
 }
 
+// MakeHeader parses header
 func (r *Request) MakeHeader() error {
 	tmp, err := VM.Get("header")
 	if err != nil {
@@ -115,6 +124,7 @@ func (r *Request) MakeHeader() error {
 	return nil
 }
 
+// MakeQuery parses query parameters
 func (r *Request) MakeQuery() error {
 	tmp, err := VM.Get("query")
 	if err != nil {
@@ -147,24 +157,62 @@ func (r *Request) MakeQuery() error {
 	return nil
 }
 
+// MakeBody parses body
 func (r *Request) MakeBody() error {
-	tmp, err := VM.Get("param")
+	v, err := VM.Get("bodyRaw")
 	if err != nil {
 		return err
 	}
-	if !tmp.IsObject() {
-		return err
+	if !v.IsString() {
+		return errors.New("Invalid bodyRaw")
 	}
-	a, err := tmp.Export()
+	raw, err := v.ToString()
 	if err != nil {
 		return err
 	}
-	m, ok := a.(map[string]interface{})
-	if !ok {
-		return errors.New("Invalid query")
+	if raw != "" {
+		r.Body = []byte(raw)
+		return nil
 	}
+
+	v, err = VM.Get("bodyFile")
+	if err != nil {
+		return err
+	}
+	if !v.IsString() {
+		return errors.New("Invalid bodyFile")
+	}
+	fn, err := v.ToString()
+	if err != nil {
+		return err
+	}
+	if fn != "" {
+		b, err := ioutil.ReadFile(fn)
+		if err != nil {
+			return err
+		}
+		r.Body = b
+		return nil
+	}
+
 	ct := r.Header.Get("Content-Type")
 	if ct == "application/json" {
+		tmp, err := VM.Get("json")
+		if err != nil {
+			return err
+		}
+		if !tmp.IsObject() {
+			return err
+		}
+		it, err := tmp.Export()
+		if err != nil {
+			return err
+		}
+		m, ok := it.(map[string]interface{})
+		if !ok {
+			return errors.New("Invalid json")
+		}
+
 		d, err := json.Marshal(m)
 		if err != nil {
 			return err
@@ -181,6 +229,21 @@ func (r *Request) MakeBody() error {
 		return nil
 	}
 	if ct == "application/x-www-form-urlencoded" {
+		tmp, err := VM.Get("form")
+		if err != nil {
+			return err
+		}
+		if !tmp.IsObject() {
+			return err
+		}
+		it, err := tmp.Export()
+		if err != nil {
+			return err
+		}
+		m, ok := it.(map[string]interface{})
+		if !ok {
+			return errors.New("Invalid form")
+		}
 		vl := url.Values{}
 		for k, v := range m {
 			s, ok := v.(string)
@@ -196,84 +259,63 @@ func (r *Request) MakeBody() error {
 		r.Body = []byte(vl.Encode())
 		return nil
 	}
+	if strings.HasPrefix(ct, "multipart/form-data") {
+		v, err := VM.Get("boundary")
+		if err != nil {
+			return err
+		}
+		if !v.IsString() {
+			return errors.New("Invalid boundary")
+		}
+		bd, err := v.ToString()
+		if err != nil {
+			return err
+		}
+
+		tmp, err := VM.Get("form")
+		if err != nil {
+			return err
+		}
+		if !tmp.IsObject() {
+			return err
+		}
+		it, err := tmp.Export()
+		if err != nil {
+			return err
+		}
+		m, ok := it.(map[string]interface{})
+		if !ok {
+			return errors.New("Invalid form")
+		}
+		params := make(map[string][]string)
+		files := make(map[string][]string)
+		for k, v := range m {
+			s, ok := v.(string)
+			if !ok {
+				i, ok := v.(int64)
+				if !ok {
+					return errors.New("Invalid param")
+				}
+				s = strconv.FormatInt(i, 10)
+			}
+			if !strings.HasPrefix(s, "@") {
+				ss := []string{s}
+				params[k] = ss
+				continue
+			}
+			ss := []string{s[1:]}
+			files[k] = ss
+		}
+		src, err := ant.MultipartFormDataFromFile(params, files, bd)
+		if err != nil {
+			return err
+		}
+		b, err := ioutil.ReadAll(src)
+		if err != nil {
+			return err
+		}
+		r.Body = b
+		return nil
+	}
 	return errors.New("Unsupport Content-Type")
-}
-
-func (r *Response) CopyFrom(res *http.Response) error {
-	r.StatusCode = res.StatusCode
-	r.Proto = res.Proto
-	r.Header = res.Header
-	defer res.Body.Close()
-	d, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-	if res.Header.Get("Content-Type") == "application/json" {
-		j, err := sj.NewJson(d)
-		if err != nil {
-			return err
-		}
-		d, err = j.EncodePretty()
-		if err != nil {
-			return err
-		}
-	}
-	r.Body = d
-	if !markdown {
-		PrintResponse(res, r)
-	} else {
-		PrintResponseMarkdown(res, r)
-	}
-	return nil
-}
-
-func (r *Response) Parse() error {
-	if err := VM.Set("status", r.StatusCode); err != nil {
-		return err
-	}
-	if err := VM.Set("proto", r.Proto); err != nil {
-		return err
-	}
-	o, err := VM.Object(`({})`)
-	if err != nil {
-		return err
-	}
-	for k, v := range r.Header {
-		o.Set(k, v[0])
-	}
-	if err := VM.Set("header", o); err != nil {
-		return err
-	}
-	if err := VM.Set("body", string(r.Body)); err != nil {
-		return err
-	}
-	if _, err := VM.Run(r.JS); err != nil {
-		return err
-	}
-	return nil
-}
-
-func PrintResponse(r *http.Response, res *Response) {
-	color.Green("Response>")
-	fmt.Printf("%s %s\r\n", r.Proto, r.Status)
-	for k, _ := range r.Header {
-		fmt.Printf("%s: %s\r\n", k, r.Header.Get(k))
-	}
-	fmt.Printf("\r\n")
-	fmt.Printf("%s\n", res.Body)
-}
-
-func PrintResponseMarkdown(r *http.Response, res *Response) {
-	fmt.Print("<details>\n")
-	fmt.Print("<summary>Response</summary>\n")
-	fmt.Print("\n")
-	fmt.Print("```\n")
-	fmt.Printf("%s %s\r\n", r.Proto, r.Status)
-	for k, _ := range r.Header {
-		fmt.Printf("%s: %s\r\n", k, r.Header.Get(k))
-	}
-	fmt.Printf("\r\n")
-	fmt.Printf("%s\n", res.Body)
-	fmt.Print("```\n")
-	fmt.Print("</details>\n")
 }
