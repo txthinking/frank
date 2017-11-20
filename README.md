@@ -33,13 +33,14 @@ Frank is REST API automated testing tool like Postman but in command line.
 
 ```
 $ sudo curl -L git.io/frank -o /usr/local/bin/frank
+$ sudo chmod +x /usr/local/bin/frank
 ```
 
 ## Test case file
 
 Test case file is actually a special javascript file.
 
-#### Score
+### Score
 
 It contains there scope:
 
@@ -72,14 +73,14 @@ It contains there scope:
 	* This variables will be reassign When response Score starts
 	* Response Score must be in pairs with Request Score
 
-#### Comment
+### Comment
 
 You can use `//` to comment a line, like this:
 ```
 // This is a comment line
 ```
 
-#### Functions
+### Functions
 
 * `md5` Arguments: string. Return: string.
 * `exit` Arguments: No. Return: No.
@@ -87,7 +88,7 @@ You can use `//` to comment a line, like this:
 
 ## Example
 
-#### Simple example
+### Simple example
 
 ```
 url="https://httpbin.org"
@@ -97,7 +98,7 @@ GET /ip
 Response
 ```
 
-#### POST form
+### POST form
 
 ```
 url="https://httpbin.org"
@@ -111,7 +112,7 @@ Response
 must(status==200)
 ```
 
-#### POST form file
+### POST form file
 
 ```
 url="https://httpbin.org"
@@ -125,7 +126,7 @@ Response
 must(status==200)
 ```
 
-#### POST json data
+### POST json data
 
 ```
 url="https://httpbin.org"
@@ -140,7 +141,7 @@ Response
 must(status==200)
 ```
 
-#### Use variable in path
+### Use variable in path
 
 ```
 url="https://httpbin.org"
@@ -152,7 +153,7 @@ Response
 must(status==200)
 ```
 
-#### Parse JSON
+### Parse JSON
 
 ```
 url="https://httpbin.org"
@@ -170,7 +171,7 @@ j = JSON.parse(body)
 must(j.origin.length > 3)
 ```
 
-#### Create variable and use it later
+### Create variable and use it later
 
 ```
 url="https://httpbin.org"
@@ -193,7 +194,7 @@ Response
 must(status==200)
 ```
 
-#### Use builtin function
+### Use builtin function
 
 ```
 url="https://httpbin.org"
@@ -205,7 +206,7 @@ Response
 must(status==200)
 ```
 
-#### Print
+### Print
 
 ```
 url="https://httpbin.org"

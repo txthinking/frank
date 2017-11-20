@@ -14,8 +14,8 @@ var markdown bool
 func main() {
 	app := cli.NewApp()
 	app.Name = "Frank"
-	app.Version = "20171114"
-	app.Usage = "Command line REST API testing tool"
+	app.Version = "20171220"
+	app.Usage = "Command line REST API automated testing tool"
 	app.Author = "Cloud"
 	app.Email = "cloud@txthinking.com"
 	app.Flags = []cli.Flag{
