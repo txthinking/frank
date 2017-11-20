@@ -87,6 +87,7 @@ Frank contains there scopes:
 		* `status` int, http status code
 		* `proto` string, http protocol, like `HTTP/2.0`
 		* `header` object, http header
+		* `cookie` object, http cookies
 		* `body` string, http body
 		* This variables will be reassigned when `Response Score` starts
 	* `Response Score` must be in pairs with `Request Score`
