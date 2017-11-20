@@ -48,7 +48,7 @@ $ curl -L git.io/frank_macos -o /usr/local/bin/frank
 $ chmod +x /usr/local/bin/frank
 ```
 
-### source
+### Source
 
 ```
 $ go get github.com/txthinking/frank
