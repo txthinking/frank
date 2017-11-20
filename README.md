@@ -1,6 +1,6 @@
 # Frank
 
-[![Build Status](https://travis-ci.org/txthinking/frank.svg?branch=master)](https://travis-ci.org/txthinking/frank) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/frank)](https://goreportcard.com/report/github.com/txthinking/frank) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/txthinking/frank/wiki)
+[![Build Status](https://travis-ci.org/txthinking/frank.svg?branch=master)](https://travis-ci.org/txthinking/frank) [![Go Report Card](https://goreportcard.com/badge/github.com/txthinking/frank)](https://goreportcard.com/report/github.com/txthinking/frank) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 ### Table of Contents
 
@@ -9,14 +9,14 @@
 * [Test case file](#test-case-file)
 	* [Score](#score)
 	* [Comment](#comment)
-	* [Functions](functions)
-* [Example](#full-example)
+	* [Builtin functions](#builtin-functions)
+* [Example](#example)
 	* [Simple example](#simple-example)
 	* [POST form](#post-form)
 	* [POST form file](#post-form-file)
 	* [POST json data](#post-json-data)
 	* [Use variable in path](#use-variable-in-path)
-	* [Parse JSON body](#parse-json-body)
+	* [Parse JSON](#parse-json)
 	* [Create variable and use it later](#create-variable-and-use-it-later)
 	* [Use builtin function](#use-builtin-function)
 	* [Print](#print)
@@ -42,36 +42,36 @@ Test case file is actually a special javascript file.
 
 ### Score
 
-It contains there scope:
+Frank contains there scopes:
 
-* Init Score
+* **Init Score**
 	* `Init Score` can define some variables if needed before request started.
 	* Must define `url` variable.
-* Request Score
-	* `Request Score` starts with a line that begines with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT ` or `DELETE `
+* **Request Score**
 	* The start line format `METHOD PATH [NAME]`, name is optionnal
-		*  like like this: `GET /path` or `GET /path Name this request`
+		* `Request Score` starts with a line that begins with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT ` or `DELETE `
 		* `PATH` must not have `?`, query and fragment
-	* This score contain this predefined variables
-		* `header={}` used for http header
-		* `bounday={}` used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary`
-		* `query={}` used for http query parameters
-		* `form={}` used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data`
-			* If form contain file, file name must start with `@`, like this: `form.key="@/path/to/file"`
-		* `json={}` used for http body when `Content-Type` is `application/json`
-		* `bodyRaw=""` a string used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile`
-		* `bodyFile=""` a file name, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw`
-	* This variables will be reset when Request Score starts
-	* Request Score must be in pairs with Response Score
-* Response Score
-	* `Response Score` starts with a line that begines with `Response`
-	* This score contain this predefined variables
+		*  Like this: `GET /path` or `GET /path Name this request`
+	* This score contains some predefined variables
+		* `header` object, used for http header
+		* `bounday` string, used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary`
+		* `query` object, used for http query parameters
+		* `form=` object, used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data`
+			* If form contains file, file name must start with `@`, like this: `form.key="@/path/to/file"`
+		* `json` object, used for http body when `Content-Type` is `application/json`
+		* `bodyRaw=""` string, used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile`
+		* `bodyFile=""` string, a file path, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw`
+		* This variables will be reset when `Request Score` starts
+	* `Request Score` must be in pairs with `Response Score`
+* **Response Score**
+	* `Response Score` starts with a line that begins with `Response`
+	* This score contains some predefined variables
 		* `status` int, http status code
 		* `proto` string, http protocol, like `HTTP/2.0`
 		* `header` object, http header
 		* `body` string, http body
-	* This variables will be reassign When response Score starts
-	* Response Score must be in pairs with Request Score
+		* This variables will be reassigned when `Response Score` starts
+	* `Response Score` must be in pairs with `Request Score`
 
 ### Comment
 
@@ -80,11 +80,11 @@ You can use `//` to comment a line, like this:
 // This is a comment line
 ```
 
-### Functions
+### Builtin functions
 
+* `exit` Arguments: No. Return: No. Exit immediately with code 0.
 * `md5` Arguments: string. Return: string.
-* `exit` Arguments: No. Return: No.
-* `must` Arguments: boolean. Return: No. If pass argument is not equal to `true`, frank will exit immediately.
+* `must` Arguments: boolean. Return: No. If argument is not equal to `true`, will exit immediately with code 2.
 
 ## Example
 
@@ -181,6 +181,10 @@ header["Accept"] = "application/json"
 header["Content-Type"] = "application/json"
 json.key0 = "value0"
 json.key1 = "value1"
+list=[]
+list.push("value3")
+list.push("value4")
+json.key2 = list
 
 Response
 must(status==200)
@@ -199,7 +203,7 @@ must(status==200)
 ```
 url="https://httpbin.org"
 
-GET /ip
+GET /get
 query.key0 = md5("value0")
 
 Response
@@ -245,4 +249,4 @@ $ frank -m > api.md
 
 ## License
 
-Licensed under The GPLv3 License
+Licensed under The MIT License
