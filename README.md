@@ -44,8 +44,8 @@ $ sudo chmod +x /usr/local/bin/frank
 ### MacOS
 
 ```
-$ sudo curl -L git.io/frank_macos -o /usr/local/bin/frank
-$ sudo chmod +x /usr/local/bin/frank
+$ curl -L git.io/frank_macos -o /usr/local/bin/frank
+$ chmod +x /usr/local/bin/frank
 ```
 
 ### source
