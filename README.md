@@ -67,7 +67,7 @@ Frank contains there scopes:
 	* Must define `url` variable.
 * **Request Score**
 	* The start line format `METHOD PATH [NAME]`, name is optionnal
-		* `Request Score` starts with a line that begins with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT ` or `DELETE `
+		* `Request Score` starts with a line that begins with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT `, `PATCH` or `DELETE `
 		* `PATH` must not have `?`, query and fragment
 		*  Like this: `GET /path` or `GET /path Name this request`
 	* This score contains some predefined variables

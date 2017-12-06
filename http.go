@@ -27,7 +27,7 @@ func NewHttpClient(url string) *HttpClient {
 // Do a request
 func (c *HttpClient) Do(req *Request) (*http.Response, error) {
 	var body io.Reader
-	if req.Method == "POST" || req.Method == "PUT" {
+	if req.Method == "POST" || req.Method == "PUT" || req.Method == "PATCH" {
 		body = bytes.NewReader(req.Body)
 	}
 	q := "?" + req.Query.Encode()

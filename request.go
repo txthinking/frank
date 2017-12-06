@@ -34,6 +34,7 @@ func RequestBegin(s string) bool {
 		!strings.HasPrefix(s, "HEAD ") &&
 		!strings.HasPrefix(s, "OPTIONS ") &&
 		!strings.HasPrefix(s, "POST ") &&
+		!strings.HasPrefix(s, "PATCH ") &&
 		!strings.HasPrefix(s, "PUT ") {
 		return false
 	}
@@ -147,7 +148,7 @@ func (r *Request) MakeQuery() error {
 		if !ok {
 			i, ok := v.(int64)
 			if !ok {
-				return errors.New("Invalid query")
+				return errors.New("Invalid query 1")
 			}
 			s = strconv.Itoa(int(i))
 		}

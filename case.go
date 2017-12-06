@@ -116,7 +116,7 @@ func (c *Case) Run() error {
 		if err := v.Request.MakeQuery(); err != nil {
 			return e(v.Request, err)
 		}
-		if v.Request.Method == "POST" || v.Request.Method == "PUT" {
+		if v.Request.Method == "POST" || v.Request.Method == "PUT" || v.Request.Method == "PATCH" {
 			if err := v.Request.MakeBody(); err != nil {
 				return e(v.Request, err)
 			}
