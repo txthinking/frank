@@ -144,13 +144,16 @@ func (r *Request) MakeQuery() error {
 	}
 	vl := url.Values{}
 	for k, v := range m {
-		s, ok := v.(string)
-		if !ok {
-			i, ok := v.(int64)
-			if !ok {
-				return errors.New("Invalid query 1")
-			}
-			s = strconv.Itoa(int(i))
+		s := ""
+		switch t := v.(type) {
+		case string:
+			s = t
+		case int64:
+			s = strconv.FormatInt(t, 10)
+		case float64:
+			s = strconv.FormatFloat(t, 'f', -1, 64)
+		default:
+			return errors.New("Invalid query")
 		}
 		vl.Set(k, s)
 	}
@@ -247,13 +250,16 @@ func (r *Request) MakeBody() error {
 		}
 		vl := url.Values{}
 		for k, v := range m {
-			s, ok := v.(string)
-			if !ok {
-				i, ok := v.(int64)
-				if !ok {
-					return errors.New("Invalid param")
-				}
-				s = strconv.Itoa(int(i))
+			s := ""
+			switch t := v.(type) {
+			case string:
+				s = t
+			case int64:
+				s = strconv.FormatInt(t, 10)
+			case float64:
+				s = strconv.FormatFloat(t, 'f', -1, 64)
+			default:
+				return errors.New("Invalid query")
 			}
 			vl.Set(k, s)
 		}
@@ -291,13 +297,16 @@ func (r *Request) MakeBody() error {
 		params := make(map[string][]string)
 		files := make(map[string][]string)
 		for k, v := range m {
-			s, ok := v.(string)
-			if !ok {
-				i, ok := v.(int64)
-				if !ok {
-					return errors.New("Invalid param")
-				}
-				s = strconv.FormatInt(i, 10)
+			s := ""
+			switch t := v.(type) {
+			case string:
+				s = t
+			case int64:
+				s = strconv.FormatInt(t, 10)
+			case float64:
+				s = strconv.FormatFloat(t, 'f', -1, 64)
+			default:
+				return errors.New("Invalid query")
 			}
 			if !strings.HasPrefix(s, "@") {
 				ss := []string{s}

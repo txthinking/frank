@@ -62,35 +62,48 @@ Test case file is actually a special javascript file.
 
 Frank contains there scopes:
 
-* **Init Score**
-	* `Init Score` can define some variables if needed before request started.
-	* Must define `url` variable.
-* **Request Score**
-	* The start line format `METHOD PATH [NAME]`, name is optionnal
-		* `Request Score` starts with a line that begins with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT `, `PATCH` or `DELETE `
-		* `PATH` must not have `?`, query and fragment
-		*  Like this: `GET /path` or `GET /path Name this request`
-	* This score contains some predefined variables
-		* `header` object, used for http header
-		* `bounday` string, used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary`
-		* `query` object, used for http query parameters
-		* `form=` object, used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data`
-			* If form contains file, file name must start with `@`, like this: `form.key="@/path/to/file"`
-		* `json` object, used for http body when `Content-Type` is `application/json`
-		* `bodyRaw=""` string, used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile`
-		* `bodyFile=""` string, a file path, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw`
-		* This variables will be reset when `Request Score` starts
-	* `Request Score` must be in pairs with `Response Score`
-* **Response Score**
-	* `Response Score` starts with a line that begins with `Response`
-	* This score contains some predefined variables
-		* `status` int, http status code
-		* `proto` string, http protocol, like `HTTP/2.0`
-		* `header` object, http header
-		* `cookie` object, http cookies
-		* `body` string, http body
-		* This variables will be reassigned when `Response Score` starts
-	* `Response Score` must be in pairs with `Request Score`
+#### Init Score
+
+`Init Score` can define some variables if needed before request started.
+
+* Must define `url` variable.
+
+#### Request Score
+
+The start line format `METHOD PATH [NAME]`, name is optionnal
+
+* `Request Score` starts with a line that begins with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT `, `PATCH` or `DELETE `
+* `PATH` must not have `?`, query and fragment
+*  Like this: `GET /path` or `GET /path Name this request`
+
+Predefined variables
+
+* `header` object, used for http header
+* `bounday` string, used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary`
+* `query` object, used for http query parameters
+* `form=` object, used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data`
+    * If form contains file, file name must start with `@`, like this: `form.key="@/path/to/file"`
+* `json` object, used for http body when `Content-Type` is `application/json`
+* `bodyRaw=""` string, used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile`
+* `bodyFile=""` string, a file path, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw`
+* This variables will be reset when `Request Score` starts
+
+> `Request Score` must be in pairs with `Response Score`
+
+#### Response Score
+
+`Response Score` starts with a line that begins with `Response`
+
+Predefined variables
+
+* `status` int, http status code
+* `proto` string, http protocol, like `HTTP/2.0`
+* `header` object, http header
+* `cookie` object, http cookies
+* `body` string, http body
+* This variables will be reassigned when `Response Score` starts
+
+> `Response Score` must be in pairs with `Request Score`
 
 ### Comment
 
