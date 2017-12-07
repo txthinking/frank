@@ -87,7 +87,7 @@ Predefined variables
 | `bodyRaw` | `string` | used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile` |
 | `bodyFile` | `string` | a file path, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw` |
 
-> This variables will be reset when `Request Score` starts
+> This variables will be reset when `Request Score` starts<br/>
 > `Request Score` must be in pairs with `Response Score`
 
 #### Response Score
@@ -104,7 +104,7 @@ Predefined variables
 | `cookie` | `object` | http cookies key/value |
 | `body` | `string` | http body |
 
-> This variables will be reassigned when `Response Score` starts
+> This variables will be reassigned when `Response Score` starts<br/>
 > `Response Score` must be in pairs with `Request Score`
 
 ### Comment
@@ -280,7 +280,7 @@ $ frank -m > api.md
 
 ## Contributing
 
-* Please create PR on `develop` branch
+Please create PR on `develop` branch
 
 ## License
 
