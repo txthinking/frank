@@ -73,21 +73,21 @@ Frank contains there scopes:
 The start line format `METHOD PATH [NAME]`, name is optionnal
 
 * `Request Score` starts with a line that begins with `GET `, `HEAD `, `OPTIONS `, `POST `, `PUT `, `PATCH` or `DELETE `
-* `PATH` must not have `?`, query and fragment
-*  Like this: `GET /path` or `GET /path Name this request`
+* `PATH` must have no `?`, query and fragment
 
 Predefined variables
 
-* `header` object, used for http header
-* `bounday` string, used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary`
-* `query` object, used for http query parameters
-* `form=` object, used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data`
-    * If form contains file, file name must start with `@`, like this: `form.key="@/path/to/file"`
-* `json` object, used for http body when `Content-Type` is `application/json`
-* `bodyRaw=""` string, used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile`
-* `bodyFile=""` string, a file path, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw`
-* This variables will be reset when `Request Score` starts
+| Name | Type | Description |
+| --- | --- | --- |
+| `header` | `object` | used for http header | 
+| `bounday` | `string` | used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary` |
+| `query` | `object` | used for http query parameters |
+| `form` | `object` | used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data` |
+| `json` | `object` | used for http body when `Content-Type` is `application/json` |
+| `bodyRaw` | `string` | used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyFile` |
+| `bodyFile` | `string` | a file path, contents of file used for http body, if this is not empty then use it and ignore `form`, `json` and `bodyRaw` |
 
+> This variables will be reset when `Request Score` starts
 > `Request Score` must be in pairs with `Response Score`
 
 #### Response Score
@@ -96,27 +96,30 @@ Predefined variables
 
 Predefined variables
 
-* `status` int, http status code
-* `proto` string, http protocol, like `HTTP/2.0`
-* `header` object, http header
-* `cookie` object, http cookies
-* `body` string, http body
-* This variables will be reassigned when `Response Score` starts
+| Name | Type | Description |
+| --- | --- | --- |
+| `status` | `int` | http status code |
+| `proto` | `string` | http protocol, like `HTTP/2.0` |
+| `header` | `object` | http header |
+| `cookie` | `object` | http cookies key/value |
+| `body` | `string` | http body |
 
+> This variables will be reassigned when `Response Score` starts
 > `Response Score` must be in pairs with `Request Score`
 
 ### Comment
 
-You can use `//` to comment a line, like this:
 ```
 // This is a comment line
 ```
 
 ### Builtin functions
 
-* `exit` Arguments: No. Return: No. Exit immediately with code 0.
-* `md5` Arguments: string. Return: string.
-* `must` Arguments: boolean. Return: No. If argument is not equal to `true`, will exit immediately with code 2.
+| Name | Arguments | Return value | Description |
+| --- | --- | --- | --- |
+| `exit` | - | - | Exit immediately with code 0 |
+| `md5` | string |  string | md5 encryption |
+| `must` | boolean | - | If argument is not equal to `true`, will exit immediately with code 2 |
 
 ## Example
 

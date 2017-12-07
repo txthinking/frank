@@ -111,13 +111,16 @@ func (r *Request) MakeHeader() error {
 	}
 	h := http.Header{}
 	for k, v := range m {
-		s, ok := v.(string)
-		if !ok {
-			i, ok := v.(int64)
-			if !ok {
-				return errors.New("Invalid header")
-			}
-			s = strconv.Itoa(int(i))
+		s := ""
+		switch t := v.(type) {
+		case string:
+			s = t
+		case int64:
+			s = strconv.FormatInt(t, 10)
+		case float64:
+			s = strconv.FormatFloat(t, 'f', -1, 64)
+		default:
+			return errors.New("Invalid header value of key: " + k)
 		}
 		h.Set(http.CanonicalHeaderKey(k), s)
 	}
@@ -153,7 +156,7 @@ func (r *Request) MakeQuery() error {
 		case float64:
 			s = strconv.FormatFloat(t, 'f', -1, 64)
 		default:
-			return errors.New("Invalid query")
+			return errors.New("Invalid query value of key: " + k)
 		}
 		vl.Set(k, s)
 	}
@@ -259,7 +262,7 @@ func (r *Request) MakeBody() error {
 			case float64:
 				s = strconv.FormatFloat(t, 'f', -1, 64)
 			default:
-				return errors.New("Invalid query")
+				return errors.New("Invalid form value of key: " + k)
 			}
 			vl.Set(k, s)
 		}
@@ -306,7 +309,7 @@ func (r *Request) MakeBody() error {
 			case float64:
 				s = strconv.FormatFloat(t, 'f', -1, 64)
 			default:
-				return errors.New("Invalid query")
+				return errors.New("Invalid form value of key: " + k)
 			}
 			if !strings.HasPrefix(s, "@") {
 				ss := []string{s}
