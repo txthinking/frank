@@ -19,4 +19,6 @@ func RegisterFunctions() {
 	function.MD5(VM)
 	function.Must(VM)
 	function.Exit(VM)
+	function.Base64Decode(VM)
+	function.Base64Encode(VM)
 }
