@@ -5,20 +5,17 @@ url="https://httpbin.org"
 some="thing"
 
 GET /get
-
 Response
 
 GET /ip Get my IP
 header["X-Hello-Frank"] = "Frank"
 query.key0 = "value0"
-
 Response
 must(status==200)
 
 POST /post Post form
 header["Content-Type"] = "application/x-www-form-urlencoded"
 form.key0 = "value0"
-
 Response
 must(status==200)
 
@@ -26,7 +23,6 @@ POST /post Post file
 header["Content-Type"] = "multipart/form-data; boundary=" + boundary
 form.key0 = "valueo"
 form.key1 = "@/etc/hosts"
-
 Response
 must(status==200)
 
@@ -36,7 +32,6 @@ header["Content-Type"] = "application/json"
 json.key0 = "value0"
 json.key1 = "value1"
 json.key2 = some
-
 Response
 must(status==200)
 j = JSON.parse(body)
@@ -44,6 +39,5 @@ myip = j.origin
 
 GET /etag/:myip Just a GET request
 query.key0 = myip
-
 Response
 must(status==200)

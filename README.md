@@ -79,7 +79,7 @@ Predefined variables
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `header` | `object` | used for http header | 
+| `header` | `object` | used for http header |
 | `bounday` | `string` | used for `header["Content-Type"] = "multipart/form-data; boundary=" + boundary` |
 | `query` | `object` | used for http query parameters |
 | `form` | `object` | used for http body when `Content-Type` is `application/x-www-form-urlencoded` or `multipart/form-data` |
@@ -129,7 +129,6 @@ Predefined variables
 url="https://httpbin.org"
 
 GET /ip
-
 Response
 ```
 
@@ -142,7 +141,6 @@ POST /post Post form
 header["Content-Type"] = "application/x-www-form-urlencoded"
 form.key0 = "value0"
 form.key1 = "value1"
-
 Response
 must(status==200)
 ```
@@ -156,7 +154,6 @@ POST /post Post file
 header["Content-Type"] = "multipart/form-data; boundary=" + boundary
 form.key0 = "value0"
 form.key1 = "@/etc/hosts"
-
 Response
 must(status==200)
 ```
@@ -171,7 +168,6 @@ header["Accept"] = "application/json"
 header["Content-Type"] = "application/json"
 json.key0 = "value0"
 json.key1 = "value1"
-
 Response
 must(status==200)
 ```
@@ -183,7 +179,6 @@ url="https://httpbin.org"
 some="thing"
 
 GET /etag/:some Just a GET request
-
 Response
 must(status==200)
 ```
@@ -199,7 +194,6 @@ header["Accept"] = "application/json"
 header["Content-Type"] = "application/json"
 json.key0 = "value0"
 json.key1 = some
-
 Response
 must(status==200)
 j = JSON.parse(body)
@@ -220,7 +214,6 @@ list=[]
 list.push("value3")
 list.push("value4")
 json.key2 = list
-
 Response
 must(status==200)
 j = JSON.parse(body)
@@ -228,7 +221,6 @@ myip = j.origin // created a new variable
 
 GET /etag/:myip Just a GET request
 query.key0 = myip // use a varible you created earlier
-
 Response
 must(status==200)
 ```
@@ -240,7 +232,6 @@ url="https://httpbin.org"
 
 GET /get
 query.key0 = md5("value0")
-
 Response
 must(status==200)
 ```
@@ -251,7 +242,6 @@ must(status==200)
 url="https://httpbin.org"
 
 GET /ip
-
 Response
 must(status==200)
 console.log(body)
