@@ -50,6 +50,10 @@ func Base64Decode(vm *otto.Otto) {
 			return otto.Value{}
 		}
 		sb, err := base64.StdEncoding.DecodeString(s)
+		if err != nil {
+			fmt.Println("ERROR", err)
+			return otto.Value{}
+		}
 		v, err := vm.ToValue(string(sb))
 		if err != nil {
 			fmt.Println("ERROR", err)
