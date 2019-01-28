@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	sj "github.com/bitly/go-simplejson"
-	"github.com/txthinking/ant"
+	"github.com/txthinking/x"
 )
 
 // Request is one of requests in case
@@ -81,7 +81,7 @@ func (r *Request) MakeStartLine() error {
 
 // Parse parses request
 func (r *Request) Parse() error {
-	_, err := VM.Run(fmt.Sprintf(`header={"User-Agent": "github.com/txthinking/frank"}; boundary="%d"; query={}; form={}; json={}; bodyRaw=""; bodyFile="";`, ant.RandomNumber()))
+	_, err := VM.Run(fmt.Sprintf(`header={"User-Agent": "github.com/txthinking/frank"}; boundary="%d"; query={}; form={}; json={}; bodyRaw=""; bodyFile="";`, x.RandomNumber()))
 	if err != nil {
 		return err
 	}
@@ -319,7 +319,7 @@ func (r *Request) MakeBody() error {
 			ss := []string{s[1:]}
 			files[k] = ss
 		}
-		src, err := ant.MultipartFormDataFromFile(params, files, bd)
+		src, err := x.MultipartFormDataFromFile(params, files, bd)
 		if err != nil {
 			return err
 		}
