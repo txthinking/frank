@@ -120,7 +120,7 @@ Predefined variables
 | `base64encode` | string |  string | standard base64 encode |
 | `base64decode` | string |  string | standard base64 decode |
 | `exit` | - | - | Exit immediately with code 0 |
-| `md5` | string |  string | md5 encryption |
+| `md5` | string |  string | md5 hash |
 | `must` | boolean | - | If argument is not equal to `true`, will exit immediately with code 2 |
 
 ## Example
