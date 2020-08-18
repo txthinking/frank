@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/robertkrimen/otto"
-	"github.com/txthinking/x"
+	"github.com/txthinking/encrypt"
 )
 
 // MD5 registers md5 function
@@ -23,7 +23,7 @@ func MD5(vm *otto.Otto) {
 			fmt.Println("ERROR", err)
 			return otto.Value{}
 		}
-		s = x.MD5(s)
+		s = encrypt.MD5(s)
 		v, err := vm.ToValue(s)
 		if err != nil {
 			fmt.Println("ERROR", err)

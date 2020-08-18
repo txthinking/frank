@@ -16,20 +16,24 @@ func main() {
 	app.Name = "Frank"
 	app.Version = "20171221"
 	app.Usage = "Command line REST API automated testing tool"
-	app.Author = "Cloud"
-	app.Email = "cloud@txthinking.com"
+	app.Authors = []*cli.Author{
+		{
+			Name:  "Cloud",
+			Email: "cloud@txthinking.com",
+		},
+	}
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:        "markdown, m",
 			Usage:       "Print markdown document",
 			Destination: &markdown,
 		},
-		cli.Int64Flag{
+		&cli.Int64Flag{
 			Name:  "delay, d",
 			Usage: "Delay per request, (millisecond)",
 			Value: 0,
 		},
-		cli.StringFlag{
+		&cli.StringFlag{
 			Name:  "case, c",
 			Usage: "Path of case file",
 			Value: "case.frank",
