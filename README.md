@@ -274,6 +274,10 @@ $ frank -m > api.md
 
 Please create PR on `develop` branch
 
+## Author
+
+A project by [txthinking](https://www.txthinking.com)
+
 ## License
 
 Licensed under The MIT License
